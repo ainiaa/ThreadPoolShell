@@ -85,7 +85,7 @@ public class FinalClearUserThreadPoolExecutor {
          */
         MyThreadPoolExecutor threadPool = new MyThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(queueDeep),
                 new ThreadPoolExecutor.CallerRunsPolicy());
-
+        long startTime = System.currentTimeMillis();
         // 向线程池中添加 totalTaskSize 个任务
         for (int taskIndex = 0; taskIndex < totalTaskSize; taskIndex++) {
             ThreadPoolTask ttp = new ThreadPoolTask(taskIndex, FinalClearUserThreadPoolExecutor.urlStr, FinalClearUserThreadPoolExecutor.uidPath, FinalClearUserThreadPoolExecutor.perTaskNumber);
@@ -95,13 +95,14 @@ public class FinalClearUserThreadPoolExecutor {
         threadPool.shutdown();//关闭线程池
 
         threadPool.isEndTask();
-        System.out.println("main thread end!");
+        long endTime = System.currentTimeMillis();
+        System.out.println("main thread end! total spend  time " + (endTime - startTime) + "ms");
         System.exit(0);//退出进程
     }
 
     public static void main(String[] args) throws IOException {
         String filePath = FinalClearUserThreadPoolExecutor.class.getResource("/").getPath() + "\\data\\setting.properties";
-        FinalClearUserThreadPoolExecutor test = new FinalClearUserThreadPoolExecutor(filePath);
-        test.createThreadPool();
+        FinalClearUserThreadPoolExecutor clearUserThreadPoolExecutor = new FinalClearUserThreadPoolExecutor(filePath);
+        clearUserThreadPoolExecutor.createThreadPool();
     }
 }
