@@ -11,30 +11,34 @@ import java.util.Map;
 
 public class ThreadPoolTask implements Runnable, Serializable {
 
-    private final Object attachData;
+    private final int taskIndex;
 
-    private static final String urlStr = "http://dev-fb-dessertshop.shinezone.com/version/dev_main/j7/j7.php?/Cgi/ClearUserHttpByParam";//这个需要修改正式环境的url
+    private final String urlStr;//"http://dev-fb-dessertshop.shinezone.com/version/dev_lwy/j7/j7.php?/Cgi/ClearUserHttpByParam";//这个需要修改正式环境的url
 
-    private static final String uidPath = "D:\\www\\GitHub\\ThreadPoolShell\\src\\threadpoolshell\\deleteUserId.txt";
+    private final String uidPath;// = "\\data\\deleteUserId.txt";
 
-    private static final int perTaskNumber = 5;
+    private final int perTaskNumber;// = 5;
 
-    public ThreadPoolTask(Object tasks) {
-        System.out.println("ThreadPoolTask:" + tasks);
-        this.attachData = tasks;
-        System.out.println("ThreadPoolTask this.attachData :" + this.attachData);
+    public ThreadPoolTask(int taskIndex, String urlStr, String uidPath, int perTaskNumber) {
+        System.out.println("ThreadPoolTask:" + taskIndex);
+        this.taskIndex = taskIndex;
+        this.urlStr = urlStr;
+        this.uidPath = uidPath;
+        this.perTaskNumber = perTaskNumber;
+//        System.out.println("ThreadPoolTask this.attachData :" + this.attachData);
     }
 
+//    public ThreadPoolTask(int tasks) {
+//        System.out.println("ThreadPoolTask:" + tasks);
+//        this.attachData = tasks;
+//        System.out.println("ThreadPoolTask this.attachData :" + this.attachData);
+//    }
     @Override
     public void run() {
 
-        System.out.println("开始执行任务：file:" + this.attachData);
+        System.out.println("开始执行任务:" + this.taskIndex);
         long startTime = System.currentTimeMillis();
-//        String tmpFilePath = "D:\\www\\test\\splitUser\\0\\0.txt";
-//      String content = readTxtFile(uidPath + attachData + ".txt");  
-//        String content = readTxtFile(tmpFilePath);
         String content = readTxtFileRangeRow(uidPath);
-//        String content = readTxtFileRangeRow(tmpFilePath);
         HashMap mp = new HashMap();
         mp.put("uid", content);
         String ret = getURLContent(urlStr, mp);
@@ -44,7 +48,7 @@ public class ThreadPoolTask implements Runnable, Serializable {
     }
 
     public Object getTask() {
-        return this.attachData;
+        return this.taskIndex;
     }
 
     public String readTxtFileRangeRow(String filePath) {
@@ -52,17 +56,20 @@ public class ThreadPoolTask implements Runnable, Serializable {
         contents = new StringBuilder();
         try {
             String encoding = "UTF-8";
+//            filePath = ThreadPoolTask.class.getResource("/").getPath() + filePath;
             File file = new File(filePath);
+
+//            System.out.println("Thread.currentThread().getContextClassLoader().getResource(filePath).toString():" + filePath);
             if (file.isFile() && file.exists()) { //判断文件是否存在
                 InputStreamReader read = new InputStreamReader(
                         new FileInputStream(file), encoding);//考虑到编码格式
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
-                System.out.println(this.attachData);
-                int i = Integer.valueOf(this.attachData.toString());//(Integer) this.attachData;直接这样会报 错的
+                System.out.println(this.taskIndex);
+//                int i = Integer.valueOf(this.attachData.toString());//(Integer) this.attachData;直接这样会报 错的
 
-                int start = i * ThreadPoolTask.perTaskNumber;
-                int end = start + ThreadPoolTask.perTaskNumber;
+                int start = this.taskIndex * this.perTaskNumber;
+                int end = start + this.perTaskNumber;
                 int index = -1;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
 //                    System.out.println(lineTxt);
@@ -78,10 +85,10 @@ public class ThreadPoolTask implements Runnable, Serializable {
                 }
                 read.close();
             } else {
-                System.out.println("找不到指定的文件");
+                System.out.println("找不到指定的文件:" + filePath);
             }
         } catch (IOException e) {
-            System.out.println("读取文件内容出错");
+            System.out.println("读取文件内容出错:" + e.toString());
             e.printStackTrace();
         }
         System.out.println("contents:" + contents.toString());

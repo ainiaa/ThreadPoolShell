@@ -43,8 +43,8 @@ public class TestThreadPoolOld {
         int end = produceTaskMaxNumber + start;
         for (int i = start; i < end; i++) {
             System.out.println("创建任务并提交到线程池中：" + i);
-            ThreadPoolTask taskObj = new ThreadPoolTask(i);
-            threadPool.execute(taskObj);
+            ThreadPoolTask ttp = new ThreadPoolTask(i, "http://dev-fb-dessertshop.shinezone.com/version/dev_lwy/j7/j7.php?/Cgi/ClearUserHttpByParam", "D:/www/GitHub/ThreadPoolShell/build/classes/data/deleteUserId.txt", 5);
+            threadPool.execute(ttp);
         }
     }
 }

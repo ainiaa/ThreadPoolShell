@@ -38,7 +38,7 @@ public class ClearUserThreadPoolExecutor {
                     e.printStackTrace();
                 }
             }
-            ThreadPoolTask ttp = new ThreadPoolTask(i);
+            ThreadPoolTask ttp = new ThreadPoolTask(i, "http://dev-fb-dessertshop.shinezone.com/version/dev_lwy/j7/j7.php?/Cgi/ClearUserHttpByParam", "D:/www/GitHub/ThreadPoolShell/build/classes/data/deleteUserId.txt", 5);
             System.out.println("put i:" + i);
             threadPool.execute(ttp);
         }
