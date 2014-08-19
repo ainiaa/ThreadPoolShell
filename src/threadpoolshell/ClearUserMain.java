@@ -77,7 +77,9 @@ public class ClearUserMain {
                 break;
             }
             int dbIndex = dbIndexArray[taskIndex % dbIndexArray.length];
-            ClearUserTask ttp = new ClearUserTask(taskIndex, ClearUserMain.urlStr, ClearUserMain.perTaskNumber, dbIndex);
+            int start = ClearUserThreadPoolExecutor.getStart(taskIndex, ClearUserMain.perTaskNumber);//0 5 10
+            int end = ClearUserThreadPoolExecutor.getEnd(taskIndex, ClearUserMain.perTaskNumber);    //5 10 15
+            ClearUserTask ttp = new ClearUserTask(taskIndex, ClearUserMain.urlStr, ClearUserMain.perTaskNumber, dbIndex, start, end);
             threadPool.execute(ttp);
         }
 

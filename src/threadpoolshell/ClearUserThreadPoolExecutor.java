@@ -1,12 +1,13 @@
 package threadpoolshell;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.*;
 
 public class ClearUserThreadPoolExecutor extends ThreadPoolExecutor {
 
     private boolean hasFinish = false;
+    private static int start = 0;
+    private static int end = 5;
 
     public ClearUserThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
@@ -25,6 +26,32 @@ public class ClearUserThreadPoolExecutor extends ThreadPoolExecutor {
     public ClearUserThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         this.initDbIndexHashSet();
+    }
+
+    public static int getStart(int taskIndex, int pageSize) {
+        int currentStart;
+        if (taskIndex == 0) {
+            currentStart = ClearUserThreadPoolExecutor.start;
+        } else {
+            currentStart = ClearUserThreadPoolExecutor.getEnd(taskIndex, pageSize) + pageSize;
+        }
+        if (currentStart < 0) {
+            currentStart = 0;
+        }
+        return currentStart;
+    }
+
+    public static int getEnd(int taskIndex, int pageSize) {
+        int currentEnd;
+        if (taskIndex == 0) {
+            currentEnd = pageSize;
+        } else {
+            currentEnd = ClearUserThreadPoolExecutor.end + pageSize;
+        }
+        if (currentEnd < 0) {
+            currentEnd = 0;
+        }
+        return currentEnd;
     }
 
     private void initDbIndexHashSet() {
@@ -55,9 +82,13 @@ public class ClearUserThreadPoolExecutor extends ThreadPoolExecutor {
                         this.dbIndexHashSet.remove(dbIndex);
                         System.out.println("dbIndex" + dbIndex + "所有任务执行结束");
                     }
+                    ClearUserThreadPoolExecutor.start = 0;
+                    ClearUserThreadPoolExecutor.end = 0;
                 } else {
                     int taskIndex = Integer.valueOf(task.getTask().toString());
                     System.out.println("dbIndex" + taskIndex + " result:" + taskIndex);
+                    ClearUserThreadPoolExecutor.start -= task.getPerTaskNumber();
+                    ClearUserThreadPoolExecutor.end -= task.getPerTaskNumber();
                 }
             } else {
                 System.out.println(r);
