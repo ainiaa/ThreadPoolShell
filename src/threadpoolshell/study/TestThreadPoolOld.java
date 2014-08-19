@@ -3,8 +3,8 @@ package threadpoolshell.study;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import threadpoolshell.MyThreadPoolExecutor;
-import threadpoolshell.ThreadPoolTask;
+import threadpoolshell.ClearUserThreadPoolExecutor;
+import threadpoolshell.clearUserByLocal.ClearUserByLocalTask;
 
 public class TestThreadPoolOld {
 
@@ -23,13 +23,13 @@ public class TestThreadPoolOld {
     public static void main(String[] args) {
 
         // 构造一个线程池  
-        MyThreadPoolExecutor threadPool = new MyThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime,
+        ClearUserThreadPoolExecutor threadPool = new ClearUserThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime,
                 TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(workQueueNumber),
                 new ThreadPoolExecutor.DiscardOldestPolicy());
 
 //        for (int i = 0; i < produceTaskMaxNumber; i++) {
 //            System.out.println("创建任务并提交到线程池中：" + i);
-//            ThreadPoolTask taskObj = new ThreadPoolTask(i);
+//            ClearUserByLocalTask taskObj = new ClearUserByLocalTask(i);
 //            threadPool.execute(taskObj);
 //        }
         addTaskToThreadPool(threadPool, 0);
@@ -39,11 +39,11 @@ public class TestThreadPoolOld {
         System.exit(0);//退出进程
     }
 
-    public static void addTaskToThreadPool(MyThreadPoolExecutor threadPool, int start) {
+    public static void addTaskToThreadPool(ClearUserThreadPoolExecutor threadPool, int start) {
         int end = produceTaskMaxNumber + start;
         for (int i = start; i < end; i++) {
             System.out.println("创建任务并提交到线程池中：" + i);
-            ThreadPoolTask ttp = new ThreadPoolTask(i, "http://dev-fb-dessertshop.shinezone.com/version/dev_lwy/j7/j7.php?/Cgi/ClearUserHttpByParam", "D:/www/GitHub/ThreadPoolShell/build/classes/data/deleteUserId.txt", 5);
+            ClearUserByLocalTask ttp = new ClearUserByLocalTask(i, "http://dev-fb-dessertshop.shinezone.com/version/dev_lwy/j7/j7.php?/Cgi/ClearUserHttpByParam", "D:/www/GitHub/ThreadPoolShell/build/classes/data/deleteUserId.txt", 5);
             threadPool.execute(ttp);
         }
     }

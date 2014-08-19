@@ -7,8 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import threadpoolshell.MyThreadPoolExecutor;
-import threadpoolshell.ThreadPoolTask;
+import threadpoolshell.clearUserByLocal.ClearUserByLocalTask;
 
 public class ClearUserThreadPoolExecutor {
 
@@ -25,7 +24,7 @@ public class ClearUserThreadPoolExecutor {
          * 使用队列深度为4的有界队列，如果执行程序尚未关闭，则位于工作队列头部的任务将被删除，  
          * 然后重试执行程序（如果再次失败，则重复此过程），里面已经根据队列深度对任务加载进行了控制。  
          */
-        MyThreadPoolExecutor threadPool = new MyThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(queueDeep),
+        threadpoolshell.ClearUserThreadPoolExecutor threadPool = new threadpoolshell.ClearUserThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(queueDeep),
                 new ThreadPoolExecutor.DiscardOldestPolicy());
 
         // 向线程池中添加 totalTaskSize 个任务
@@ -38,7 +37,7 @@ public class ClearUserThreadPoolExecutor {
                     e.printStackTrace();
                 }
             }
-            ThreadPoolTask ttp = new ThreadPoolTask(i, "http://dev-fb-dessertshop.shinezone.com/version/dev_lwy/j7/j7.php?/Cgi/ClearUserHttpByParam", "D:/www/GitHub/ThreadPoolShell/build/classes/data/deleteUserId.txt", 5);
+            ClearUserByLocalTask ttp = new ClearUserByLocalTask(i, "http://dev-fb-dessertshop.shinezone.com/version/dev_lwy/j7/j7.php?/Cgi/ClearUserHttpByParam", "D:/www/GitHub/ThreadPoolShell/build/classes/data/deleteUserId.txt", 5);
             System.out.println("put i:" + i);
             threadPool.execute(ttp);
         }
