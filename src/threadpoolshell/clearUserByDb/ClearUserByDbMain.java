@@ -1,4 +1,4 @@
-package threadpoolshell;
+package threadpoolshell.clearUserByDb;
 
 /**
  * @author Jeff Liu 清除给定用户
@@ -12,7 +12,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class ClearUserMain {
+public class ClearUserByDbMain {
 
     private static int queueDeep;
     private static int corePoolSize;
@@ -21,14 +21,14 @@ public class ClearUserMain {
     private static int perTaskNumber;//
     private static String urlStr;
 
-    public ClearUserMain() {
-        ClearUserMain.queueDeep = 10;
-        ClearUserMain.corePoolSize = 5;
-        ClearUserMain.maximumPoolSize = 10;
-        ClearUserMain.keepAliveTime = 3;
+    public ClearUserByDbMain() {
+        ClearUserByDbMain.queueDeep = 10;
+        ClearUserByDbMain.corePoolSize = 5;
+        ClearUserByDbMain.maximumPoolSize = 10;
+        ClearUserByDbMain.keepAliveTime = 3;
     }
 
-    public ClearUserMain(String filePath) throws IOException {
+    public ClearUserByDbMain(String filePath) throws IOException {
         File f = new File(filePath);
         if (f.exists()) {
             Properties prop = new Properties();
@@ -41,22 +41,22 @@ public class ClearUserMain {
                     System.out.println(ex.toString());
                 }
                 if (!prop.getProperty("queueDeep", "").isEmpty()) {
-                    ClearUserMain.queueDeep = Integer.valueOf(prop.getProperty("queueDeep"));
+                    ClearUserByDbMain.queueDeep = Integer.valueOf(prop.getProperty("queueDeep"));
                 }
                 if (!prop.getProperty("corePoolSize", "").isEmpty()) {
-                    ClearUserMain.corePoolSize = Integer.valueOf(prop.getProperty("corePoolSize"));
+                    ClearUserByDbMain.corePoolSize = Integer.valueOf(prop.getProperty("corePoolSize"));
                 }
                 if (!prop.getProperty("maximumPoolSize", "").isEmpty()) {
-                    ClearUserMain.maximumPoolSize = Integer.valueOf(prop.getProperty("maximumPoolSize"));
+                    ClearUserByDbMain.maximumPoolSize = Integer.valueOf(prop.getProperty("maximumPoolSize"));
                 }
                 if (!prop.getProperty("keepAliveTime", "").isEmpty()) {
-                    ClearUserMain.keepAliveTime = Integer.valueOf(prop.getProperty("keepAliveTime"));
+                    ClearUserByDbMain.keepAliveTime = Integer.valueOf(prop.getProperty("keepAliveTime"));
                 }
                 if (!prop.getProperty("urlStr", "").isEmpty()) {
-                    ClearUserMain.urlStr = prop.getProperty("urlStr");
+                    ClearUserByDbMain.urlStr = prop.getProperty("urlStr");
                 }
                 if (!prop.getProperty("perTaskNumber", "").isEmpty()) {
-                    ClearUserMain.perTaskNumber = Integer.valueOf(prop.getProperty("perTaskNumber"));
+                    ClearUserByDbMain.perTaskNumber = Integer.valueOf(prop.getProperty("perTaskNumber"));
                 }
             } catch (FileNotFoundException ex) {
                 System.out.println(ex.toString());
@@ -65,7 +65,7 @@ public class ClearUserMain {
     }
 
     public void createThreadPool() {
-        ClearUserThreadPoolExecutor threadPool = new ClearUserThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(queueDeep),
+        ClearUserByDbThreadPoolExecutor threadPool = new ClearUserByDbThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(queueDeep),
                 new ThreadPoolExecutor.CallerRunsPolicy());
         long startTime = System.currentTimeMillis();
         // 向线程池中添加 totalTaskSize 个任务
@@ -77,7 +77,7 @@ public class ClearUserMain {
                 break;
             }
             int dbIndex = dbIndexArray[taskIndex % dbIndexArray.length];
-            ClearUserTask ttp = new ClearUserTask(taskIndex, ClearUserMain.urlStr, ClearUserMain.perTaskNumber, dbIndex);
+            ClearUserByDbTask ttp = new ClearUserByDbTask(taskIndex, ClearUserByDbMain.urlStr, ClearUserByDbMain.perTaskNumber, dbIndex);
             threadPool.execute(ttp);
         }
 
@@ -90,8 +90,8 @@ public class ClearUserMain {
     }
 
     public static void main(String[] args) throws IOException {
-        String filePath = ClearUserMain.class.getResource("/").getPath() + "\\data\\setting.properties";
-        ClearUserMain clearUserThreadPoolExecutor = new ClearUserMain(filePath);
+        String filePath = ClearUserByDbMain.class.getResource("/").getPath() + "\\data\\setting.properties";
+        ClearUserByDbMain clearUserThreadPoolExecutor = new ClearUserByDbMain(filePath);
         clearUserThreadPoolExecutor.createThreadPool();
     }
 }

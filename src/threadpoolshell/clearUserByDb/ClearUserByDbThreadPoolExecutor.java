@@ -1,28 +1,28 @@
-package threadpoolshell;
+package threadpoolshell.clearUserByDb;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.*;
 
-public class ClearUserThreadPoolExecutor extends ThreadPoolExecutor {
+public class ClearUserByDbThreadPoolExecutor extends ThreadPoolExecutor {
 
     private boolean hasFinish = false;
 
-    public ClearUserThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
+    public ClearUserByDbThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
         this.initDbIndexHashSet();
     }
 
-    public ClearUserThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+    public ClearUserByDbThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
     }
 
-    public ClearUserThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
+    public ClearUserByDbThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
         this.initDbIndexHashSet();
     }
 
-    public ClearUserThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+    public ClearUserByDbThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         this.initDbIndexHashSet();
     }
@@ -45,9 +45,9 @@ public class ClearUserThreadPoolExecutor extends ThreadPoolExecutor {
         super.afterExecute(r, t);
         synchronized (this) {
 //            System.out.println("自动调用了....afterEx 此时getActiveCount()值:" + this.getActiveCount());
-            if (r instanceof ClearUserTask) {
-                ClearUserTask task;
-                task = (ClearUserTask) r;
+            if (r instanceof ClearUserByDbTask) {
+                ClearUserByDbTask task;
+                task = (ClearUserByDbTask) r;
                 String result = task.getResult();
                 System.out.println(result);
                 if ("-1".equals(result)) {//返回-1 意思为 没有改dbIndex 或者 该dbIndex 没有数据需要清理 直接结束任务

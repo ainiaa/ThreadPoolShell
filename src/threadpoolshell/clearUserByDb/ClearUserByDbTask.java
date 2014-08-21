@@ -1,11 +1,11 @@
-package threadpoolshell;
+package threadpoolshell.clearUserByDb;
 
 import utils.HttpPostUtils;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClearUserTask implements Runnable, Serializable {
+public class ClearUserByDbTask implements Runnable, Serializable {
 
     private final int taskIndex;
 
@@ -17,17 +17,11 @@ public class ClearUserTask implements Runnable, Serializable {
 
     private final int dbIndex;//数据库索引
 
-    private final int start;//limit start
-
-    private final int end;//limit end
-
-    public ClearUserTask(int taskIndex, String urlStr, int perTaskNumber, int dbIndex, int start, int end) {
+    public ClearUserByDbTask(int taskIndex, String urlStr, int perTaskNumber, int dbIndex) {
         this.taskIndex = taskIndex;
         this.urlStr = urlStr;
         this.perTaskNumber = perTaskNumber;
         this.dbIndex = dbIndex;
-        this.start = start;
-        this.end = end;
     }
 
     @Override
@@ -36,16 +30,10 @@ public class ClearUserTask implements Runnable, Serializable {
         HashMap mp = new HashMap();
         mp.put("perTaskNumber", String.valueOf(this.perTaskNumber));
         mp.put("dbIndex", String.valueOf(this.dbIndex));
-        mp.put("start", String.valueOf(this.start));
-        mp.put("end", String.valueOf(this.end));
         String ret = getURLContent(urlStr, mp);
         this.result = ret;
     }
 
-    public int getPerTaskNumber() {
-        return this.perTaskNumber;
-    }
-    
     public int getDbIndex() {
         return this.dbIndex;
     }

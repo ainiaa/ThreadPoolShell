@@ -72,9 +72,9 @@ public class ClearUserThreadPoolExecutor extends ThreadPoolExecutor {
         super.afterExecute(r, t);
         synchronized (this) {
 //            System.out.println("自动调用了....afterEx 此时getActiveCount()值:" + this.getActiveCount());
-            if (r instanceof ClearUserTask) {
-                ClearUserTask task;
-                task = (ClearUserTask) r;
+            if (r instanceof RecoverUserFromDbTask) {
+                RecoverUserFromDbTask task;
+                task = (RecoverUserFromDbTask) r;
                 System.out.println(task.getResult());
                 if ("-1".equals(task.getResult())) {//返回-1 意思为 没有改dbIndex 或者 该dbIndex 没有数据需要清理 直接结束任务
                     int dbIndex = task.getDbIndex();

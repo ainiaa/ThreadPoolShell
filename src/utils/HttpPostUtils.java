@@ -45,12 +45,16 @@ public class HttpPostUtils {
             con.setDoOutput(true);
             con.setRequestMethod("POST");
             con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0");//放置因为没有user-agent导致访问不正常
-            String paramsTemp = "";
-            for (String param : params) {
-                if (param != null && !"".equals(param.trim())) {
-                    paramsTemp += "&" + param;
-                }
-            }
+            con.setConnectTimeout(0);//不超时 要不然 30s之后就会超时了。
+            con.setReadTimeout(0);//不超时
+            con.setRequestProperty("Connection", "Keep-Alive");// 设置长连接
+            con.setRequestProperty("Cache-Control", "no-cache");//设置 不使用cache
+            String paramsTemp = HttpPostUtils.getParamStringFromParamArray(params);
+//            for (String param : params) {
+//                if (param != null && !"".equals(param.trim())) {
+//                    paramsTemp += "&" + param;
+//                }
+//            }
             byte[] b = paramsTemp.getBytes();
             con.getOutputStream().write(b, 0, b.length);
             con.getOutputStream().flush();
@@ -66,6 +70,11 @@ public class HttpPostUtils {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            String fileName = "E:/recoverUserFailure.txt";
+            String content = HttpPostUtils.getParamStringFromParamArray(params);
+            //按方法A追加文件
+            FileUtils.appendMethodA(fileName, content + "\r\n");
+
         } finally {
             try {
                 if (in != null) {
@@ -80,4 +89,15 @@ public class HttpPostUtils {
         }
         return result.toString();
     }
+
+    public static String getParamStringFromParamArray(String[] params) {
+        String paramsTemp = "";
+        for (String param : params) {
+            if (param != null && !"".equals(param.trim())) {
+                paramsTemp += "&" + param;
+            }
+        }
+        return paramsTemp;
+    }
+
 }
