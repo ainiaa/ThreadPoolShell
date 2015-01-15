@@ -94,11 +94,6 @@ public class RecoverUserFromDbMain {
 //            }
             RecoverUserFromDbTask ttp = new RecoverUserFromDbTask(++taskIndex, RecoverUserFromDbMain.urlStr, RecoverUserFromDbMain.uidPath, RecoverUserFromDbMain.perTaskNumber);
             threadPool.execute(ttp);
-            try {
-                Thread.sleep(9000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             if (taskIndex > RecoverUserFromDbMain.totalTaskSize) {
                 break;
             }
